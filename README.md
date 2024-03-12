@@ -1,16 +1,9 @@
-# SpyOn
- A simple module that displays DOM attributes on mouseover inside a tooltip.
-
-# Demo
-![SpyOn Demo](https://eddieherm.s3.amazonaws.com/spyon-demo-sm.gif)
+# AutomIA SpyWeb
+Une partie du code de ce compposant est basé sur le projet SpyOn : https://github.com/edeych/spyon et est donc sous licence MIT conformément au choix de son auteur
+Le reste du code initialement implémenté par des membres de la société Open est en accord avec l'entreprise distribué sous licence GPL V3, d'où la présence des deux licences sur ce repo
 
 # Instructions
-1. Copy and paste the entire code into your web console
-2. Include the JS file in your code base
+1. Copiez et collez l'intégralité du code dans votre console web.
+2. Inclure le fichier JS dans votre base de code
 
-This is implemented as an IIFE so the spy is turned on immediately upon execution.
-
-# Use cases
-1. Help troubleshoot a UI bug
-2. Ensure that your app's DOM elements are working as expected (getting the right class on click, etc)
-3. Find out how another web app is structured
+Cette opération est mise en œuvre sous la forme d'un IIFE, de sorte que l'espion est activé immédiatement après l'exécution.
