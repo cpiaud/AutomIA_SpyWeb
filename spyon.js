@@ -123,6 +123,8 @@
       value: attr.nodeValue,
     }));
 
+    attributes.textContent = el.textContent.trim();
+
     return attributes;
   }
 
