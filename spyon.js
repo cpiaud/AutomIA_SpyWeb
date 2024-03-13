@@ -1,16 +1,24 @@
 (function SpyOn() {
-
-  const _id = 'spyon-container',
-        _posBuffer = 3;
+  const _id = "spyon-container",
+    _posBuffer = 3;
 
   function init() {
-    document.body.addEventListener('mousemove', glide);
-    document.body.addEventListener('mouseover', show);
-    document.body.addEventListener('mouseleave', hide);
+    document.body.addEventListener("mousemove", glide);
+    document.body.addEventListener("mouseover", show);
+    document.body.addEventListener("mouseleave", hide);
+    document.body.addEventListener("contextmenu", function (e) {
+      const filename = prompt(
+        "Enter file name:",
+        e.target.nodeName.toLowerCase() + "_" + "ClikMe"
+      );
+      if (filename) {
+        saveElementToJson(e, filename);
+      }
+    });
   }
 
   function hide(e) {
-    document.getElementById(_id).style.display = 'none';
+    document.getElementById(_id).style.display = "none";
   }
 
   function show(e) {
@@ -19,8 +27,8 @@
       create();
       return;
     }
-    if (spyContainer.style.display !== 'block') {
-      spyContainer.style.display = 'block';
+    if (spyContainer.style.display !== "block") {
+      spyContainer.style.display = "block";
     }
   }
 
@@ -34,24 +42,24 @@
     const top = e.clientY + getScrollPos().top + _posBuffer;
     spyContainer.innerHTML = showAttributes(e.target);
     if (left + spyContainer.offsetWidth > window.innerWidth) {
-      spyContainer.style.left = left - spyContainer.offsetWidth + 'px';
+      spyContainer.style.left = left - spyContainer.offsetWidth + "px";
     } else {
-      spyContainer.style.left = left + 'px';
+      spyContainer.style.left = left + "px";
     }
-    spyContainer.style.top = top + 'px';
+    spyContainer.style.top = top + "px";
   }
 
   function getScrollPos() {
     const ieEdge = document.all ? false : true;
     if (!ieEdge) {
       return {
-        left : document.body.scrollLeft,
-        top : document.body.scrollTop
+        left: document.body.scrollLeft,
+        top: document.body.scrollTop,
       };
     } else {
       return {
-        left : document.documentElement.scrollLeft,
-        top : document.documentElement.scrollTop
+        left: document.documentElement.scrollLeft,
+        top: document.documentElement.scrollTop,
       };
     }
   }
@@ -62,14 +70,16 @@
     const attributes = attrArr.reduce((attrs, attr) => {
       attrs += `<span style="color:#ffffcc;">${attr.nodeName}</span>="${attr.nodeValue}"<br/>`;
       return attrs;
-    }, '');
+    }, "");
     return nodeName + attributes;
   }
 
   function create() {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.id = _id;
-    div.setAttribute('style', `
+    div.setAttribute(
+      "style",
+      `
       position: absolute;
       left: 0;
       top: 0;
@@ -89,6 +99,32 @@
     document.body.appendChild(div);
   }
 
-  init();
+  function saveElementToJson(e, filename) {
+    const spyContainer = document.getElementById(_id);
+    if (spyContainer) {
+      const attributes = collectAttributes(e.target);
+      const jsonContent = JSON.stringify(attributes, null, 2);
 
+      // create a blob and trigger download
+
+      const blob = new Blob([jsonContent], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename + ".json";
+      a.click();
+    }
+  }
+
+  function collectAttributes(el) {
+    const attributes = {};
+    attributes.nodeName = el.nodeName.toLowerCase();
+    attributes.attributes = Array.from(el.attributes).map((attr) => ({
+      name: attr.nodeName,
+      value: attr.nodeValue,
+    }));
+
+    return attributes;
+  }
+
+  init();
 })();
