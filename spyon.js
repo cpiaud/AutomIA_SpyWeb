@@ -116,12 +116,13 @@
   }
 
   function collectAttributes(el) {
-    const attributes = {};
-    attributes.nodeName = el.nodeName.toLowerCase();
-    attributes.attributes = Array.from(el.attributes).map((attr) => ({
-      name: attr.nodeName,
-      value: attr.nodeValue,
-    }));
+    const attributes = {
+      tagName: el.nodeName.toLowerCase(),
+    };
+
+    Array.from(el.attributes).forEach((attr) => {
+      attributes[attr.nodeName] = attr.nodeValue;
+    });
 
     attributes.textContent = el.textContent.trim();
 
