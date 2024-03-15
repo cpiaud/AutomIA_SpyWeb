@@ -75,7 +75,7 @@
       return attrs;
     }, "");
 
-    return nodeName + attributes + textContent;
+    return nodeName + attributes;
   }
 
   function create() {
