@@ -7,9 +7,12 @@
     document.body.addEventListener("mouseover", show);
     document.body.addEventListener("mouseleave", hide);
     document.body.addEventListener("contextmenu", function (e) {
+      const textContent = e.target.textContent.trim();
       const filename = prompt(
         "Enter file name:",
-        e.target.nodeName.toLowerCase() + "_" + "ClikMe"
+        textContent
+          ? e.target.nodeName.toLowerCase() + "_" + textContent
+          : e.target.nodeName.toLowerCase() + "_" + "GiveMeAName"
       );
       if (filename) {
         saveElementToJson(e, filename);
@@ -71,7 +74,8 @@
       attrs += `<span style="color:#ffffcc;">${attr.nodeName}</span>="${attr.nodeValue}"<br/>`;
       return attrs;
     }, "");
-    return nodeName + attributes;
+
+    return nodeName + attributes + textContent;
   }
 
   function create() {
