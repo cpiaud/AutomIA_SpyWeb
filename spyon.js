@@ -1,6 +1,8 @@
 (function SpyOn() {
   const _id = "spyon-container",
     _posBuffer = 3;
+  // new line
+  let hoveredElement = null;
 
   function init() {
     document.body.addEventListener("mousemove", glide);
@@ -17,6 +19,11 @@
       if (filename) {
         saveElementToJson(e, filename);
       }
+    });
+
+    // new line
+    document.addEventListener("keydown", function (e) {
+      handleShortcut(e, hoveredElement);
     });
   }
 
@@ -43,13 +50,31 @@
     }
     const left = e.clientX + getScrollPos().left + _posBuffer;
     const top = e.clientY + getScrollPos().top + _posBuffer;
-    spyContainer.innerHTML = showAttributes(e.target);
+    // new line
+    hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
+    spyContainer.innerHTML = showAttributes(hoveredElement);
+    //spyContainer.innerHTML = showAttributes(e.target);
     if (left + spyContainer.offsetWidth > window.innerWidth) {
       spyContainer.style.left = left - spyContainer.offsetWidth + "px";
     } else {
       spyContainer.style.left = left + "px";
     }
     spyContainer.style.top = top + "px";
+  }
+
+  // new line
+  async function handleShortcut(e, hoveredElement) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+      e.preventDefault();
+      const spyContainer = document.getElementById(_id);
+      if (!spyContainer || !hoveredElement) return;
+      const textContent = hoveredElement.textContent.trim();
+      const filename = hoveredElement.nodeName
+        ? hoveredElement.nodeName.toLowerCase() + "_" + textContent
+        : hoveredElement.nodeName.toLowerCase() + "_" + "GiveMeAName";
+
+      await saveElementToJson(hoveredElement, filename);
+    }
   }
 
   function getScrollPos() {
@@ -74,8 +99,8 @@
       attrs += `<span style="color:#ffffcc;">${attr.nodeName}</span>="${attr.nodeValue}"<br/>`;
       return attrs;
     }, "");
-
-    return nodeName + attributes;
+    const textContent = `<span style="color:#ffffcc;">textContent</span>="${el.textContent.trim()}"<br/>`;
+    return nodeName + attributes + textContent;
   }
 
   function create() {
@@ -106,7 +131,7 @@
   function saveElementToJson(e, filename) {
     const spyContainer = document.getElementById(_id);
     if (spyContainer) {
-      const attributes = collectAttributes(e.target);
+      const attributes = collectAttributes(hoveredElement);
       const jsonContent = JSON.stringify(attributes, null, 2);
 
       // create a blob and trigger download
@@ -120,8 +145,9 @@
   }
 
   function collectAttributes(el) {
+    console.log("hoveredElement", el);
     const attributes = {
-      tagName: el.nodeName.toLowerCase(),
+      tagName: el ? el.nodeName.toLowerCase() : "unknown",
     };
 
     Array.from(el.attributes).forEach((attr) => {
