@@ -128,24 +128,32 @@
     document.body.appendChild(div);
   }
 
-  function saveElementToJson(e, filename) {
+  async function saveElementToJson(e, filename) {
     const spyContainer = document.getElementById(_id);
     if (spyContainer) {
       const attributes = collectAttributes(hoveredElement);
       const jsonContent = JSON.stringify(attributes, null, 2);
-
+      try {
+        const fileHandle = await window.showSaveFilePicker({
+          suggestedName: filename + ".json",
+          types: [{ accept: { "application/json": [".json"] } }],
+        });
+        const writable = await fileHandle.createWritable();
+        await writable.write(jsonContent);
+        await writable.close();
+      } catch (error) {
+        console.error("Erreur lors de l'enregistrement du fichier :", error);
+      }
       // create a blob and trigger download
-
-      const blob = new Blob([jsonContent], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = filename + ".json";
-      a.click();
+      // const blob = new Blob([jsonContent], { type: "application/json" });
+      // const a = document.createElement("a");
+      // a.href = URL.createObjectURL(blob);
+      // a.download = filename + ".json";
+      // a.click();
     }
   }
 
   function collectAttributes(el) {
-    console.log("hoveredElement", el);
     const attributes = {
       tagName: el ? el.nodeName.toLowerCase() : "unknown",
     };
