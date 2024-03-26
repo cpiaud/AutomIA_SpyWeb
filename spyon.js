@@ -63,7 +63,7 @@
   }
 
   // new line
-  async function handleShortcut(e, hoveredElement) {
+  async function handleShortcut(e, hoveredElement) { 
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
       e.preventDefault();
       const spyContainer = document.getElementById(_id);

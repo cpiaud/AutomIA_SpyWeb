@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "AutomIA",
+    "version": "1.0",
+  
+    "description": "Enregistrer les attributs de l'élément.",
+  
+    "icons": {
+      "48": "icons/icon-48.png"
+    },
+  
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["spyon.js"]
+      }
+    ]
+      
+  }
+  
