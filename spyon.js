@@ -1,27 +1,13 @@
 (function SpyOn() {
   const _id = "spyon-container",
     _posBuffer = 3;
-  // new line
   let hoveredElement = null;
 
   function init() {
     document.body.addEventListener("mousemove", glide);
     document.body.addEventListener("mouseover", show);
     document.body.addEventListener("mouseleave", hide);
-    document.body.addEventListener("contextmenu", function (e) {
-      const textContent = e.target.textContent.trim();
-      const filename = prompt(
-        "Enter file name:",
-        textContent
-          ? e.target.nodeName.toLowerCase() + "_" + textContent
-          : e.target.nodeName.toLowerCase() + "_" + "GiveMeAName"
-      );
-      if (filename) {
-        saveElementToJson(e, filename);
-      }
-    });
-
-    // new line
+    document.body.addEventListener("contextmenu", handleContextMenu);
     document.addEventListener("keydown", function (e) {
       handleShortcut(e, hoveredElement);
     });
@@ -62,14 +48,26 @@
     spyContainer.style.top = top + "px";
   }
 
+  async function handleContextMenu(e) {
+    e.preventDefault();
+    const spyContainer = document.getElementById(_id);
+    if (!spyContainer || !hoveredElement) return;
+    const textContent = hoveredElement.textContent.trim();
+    const filename = textContent
+      ? hoveredElement.nodeName.toLowerCase() + "_" + textContent
+      : hoveredElement.nodeName.toLowerCase() + "_" + "GiveMeAName";
+
+    await saveElementToJson(hoveredElement, filename);
+  }
+
   // new line
-  async function handleShortcut(e, hoveredElement) { 
+  async function handleShortcut(e, hoveredElement) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
       e.preventDefault();
       const spyContainer = document.getElementById(_id);
       if (!spyContainer || !hoveredElement) return;
       const textContent = hoveredElement.textContent.trim();
-      const filename = hoveredElement.nodeName
+      const filename = textContent
         ? hoveredElement.nodeName.toLowerCase() + "_" + textContent
         : hoveredElement.nodeName.toLowerCase() + "_" + "GiveMeAName";
 
