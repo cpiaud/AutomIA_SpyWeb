@@ -14,7 +14,15 @@
   }
 
   function hide(e) {
-    document.getElementById(_id).style.display = "none";
+    const spyContainer = document.getElementById(_id);
+    if (spyContainer) {
+      spyContainer.style.display = "none";
+
+    }
+    if (hoveredElement) {
+      hoveredElement.style.outline = "none";
+    }
+    //document.getElementById(_id).style.display = "none";
   }
 
   function show(e) {
@@ -34,18 +42,31 @@
       create();
       return;
     }
-    const left = e.clientX + getScrollPos().left + _posBuffer;
-    const top = e.clientY + getScrollPos().top + _posBuffer;
-    // new line
-    hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
-    spyContainer.innerHTML = showAttributes(hoveredElement);
-    //spyContainer.innerHTML = showAttributes(e.target);
-    if (left + spyContainer.offsetWidth > window.innerWidth) {
-      spyContainer.style.left = left - spyContainer.offsetWidth + "px";
-    } else {
-      spyContainer.style.left = left + "px";
+    const newHoveredElement = document.elementFromPoint(e.clientX, e.clientY)
+    if (newHoveredElement !== hoveredElement) {
+      if (hoveredElement) {
+        hoveredElement.style.outline = "none";
+      }
+      hoveredElement = newHoveredElement;
+      if (hoveredElement) {
+        hoveredElement.style.outline = "2px solid red";
+      }
+      spyContainer.innerHTML = showAttributes(hoveredElement);
     }
-    spyContainer.style.top = top + "px";
+     if (spyContainer) {
+      const left = e.clientX + getScrollPos().left + _posBuffer;
+      const top = e.clientY + getScrollPos().top + _posBuffer;
+      // new line
+      hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
+      spyContainer.innerHTML = showAttributes(hoveredElement);
+      //spyContainer.innerHTML = showAttributes(e.target);
+      if (left + spyContainer.offsetWidth > window.innerWidth) {
+        spyContainer.style.left = left - spyContainer.offsetWidth + "px";
+      } else {
+        spyContainer.style.left = left + "px";
+      }
+      spyContainer.style.top = top + "px";
+     }
   }
 
   async function handleContextMenu(e) {
