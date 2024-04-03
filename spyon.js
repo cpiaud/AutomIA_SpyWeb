@@ -51,7 +51,6 @@
         hoveredElement.style.outline = "2px solid red";
         spyContainer.innerHTML = showAttributes(hoveredElement);
       }
-      
     }
     if (spyContainer) {
       const left = e.clientX + getScrollPos().left + _posBuffer;
@@ -77,7 +76,6 @@
     await saveElementToJson(hoveredElement, filename);
   }
 
-  // new line
   async function handleShortcut(e, hoveredElement) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
       e.preventDefault();
@@ -115,15 +113,17 @@
       return attrs;
     }, "");
     const textContent = `<span style="color:#ffffcc;">textContent</span>="${el.textContent.trim()}"<br/>`;
-    let parentContent = '';
-      let parent = el.parentElement;
-      while (parent) {
-          const parentAttributes = Array.from(parent.attributes).map(attr => {
-              return `<span style="color:#ffffcc;">${attr.nodeName}</span>="${attr.nodeValue}"`;
-          }).join('&nbsp;');
-          parentContent += `<span style="color:#ffffcc;">Parent Tag Name:</span> ${parent.nodeName.toLowerCase()} ${parentAttributes}<br/>`;
-          parent = parent.parentElement;
-      }
+    let parentContent = "";
+    let parent = el.parentElement;
+    while (parent) {
+      const parentAttributes = Array.from(parent.attributes)
+        .map((attr) => {
+          return `<span style="color:#ffffcc;">${attr.nodeName}</span>="${attr.nodeValue}"`;
+        })
+        .join("&nbsp;");
+      parentContent += `<span style="color:#ffffcc;">Parent Node Name:</span> ${parent.nodeName.toLowerCase()} ${parentAttributes}<br/>`;
+      parent = parent.parentElement;
+    }
     return nodeName + attributes + textContent + parentContent;
   }
 
@@ -177,43 +177,22 @@
     }
   }
 
-  // function collectAttributes(el) {
-  //   const attributes = {
-  //     tagName: el ? el.nodeName.toLowerCase() : "unknown",
-  //   };
-
-  //   Array.from(el.attributes).forEach((attr) => {
-  //     attributes[attr.nodeName] = attr.nodeValue;
-  //   });
-
-  //   attributes.textContent = el.textContent.trim();
-
-  //   return attributes;
-  // }
-
   function collectAttributes(el) {
     const attributes = {
-      tagName: el.nodeName.toLowerCase(),
+      tagName: el ? el.nodeName.toLowerCase() : "unknown",
       parents: [],
-      //textContent: el.textContent.trim(),
     };
-
-    // Récupérer les attributs
     Array.from(el.attributes).forEach((attr) => {
       attributes[attr.nodeName] = attr.nodeValue;
     });
 
     attributes.textContent = el.textContent.trim();
-
-    // Récupérer les parents
     let parent = el.parentElement;
     while (parent) {
       const parentAttributes = {
         tagName: parent.nodeName.toLowerCase(),
-        //attributes: {},
       };
 
-      // Récupérer les attributs du parent
       Array.from(parent.attributes).forEach((attr) => {
         parentAttributes[attr.nodeName] = attr.nodeValue;
       });
