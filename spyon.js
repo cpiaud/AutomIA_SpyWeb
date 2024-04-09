@@ -180,7 +180,7 @@
   }
   function getSiblings(el) {
     const parent = el.parentElement;
-    if (!parent) return []; // Pas de parent, pas de frères
+    if (!parent) return []; 
     return Array.from(parent.children).filter((child) => child !== el);
   }
 
