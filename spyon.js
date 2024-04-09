@@ -49,7 +49,9 @@
       hoveredElement = newHoveredElement;
       if (hoveredElement) {
         hoveredElement.style.outline = "2px solid red";
-        spyContainer.innerHTML = showAttributes(hoveredElement);
+         const siblings = getSiblings(hoveredElement);
+         const siblingCount = siblings.length;
+         spyContainer.innerHTML = showAttributes(hoveredElement) + `Elements brothers: ${siblingCount}<br/>`;
       }
     }
     if (spyContainer) {
@@ -176,11 +178,17 @@
       // a.click();
     }
   }
+  function getSiblings(el) {
+    const parent = el.parentElement;
+    if (!parent) return []; // Pas de parent, pas de frères
+    return Array.from(parent.children).filter((child) => child !== el);
+  }
 
   function collectAttributes(el) {
     const attributes = {
       tagName: el ? el.nodeName.toLowerCase() : "unknown",
       parents: [],
+      siblings: []
     };
     Array.from(el.attributes).forEach((attr) => {
       attributes[attr.nodeName] = attr.nodeValue;
@@ -200,9 +208,21 @@
       attributes.parents.push(parentAttributes);
       parent = parent.parentElement;
     }
+     const siblings = getSiblings(el);
+     siblings.forEach((sibling) => {
+       const siblingAttributes = {
+         tagName: sibling.nodeName.toLowerCase(),
+       };
+       Array.from(sibling.attributes).forEach((attr) => {
+         siblingAttributes[attr.nodeName] = attr.nodeValue;
+       });
+       attributes.siblings.push(siblingAttributes);
+     });
 
     return attributes;
   }
 
   init();
 })();
+
+
