@@ -13,6 +13,8 @@
     });
   }
 
+
+
   function hide(e) {
     const spyContainer = document.getElementById(_id);
     if (spyContainer) {
@@ -21,7 +23,6 @@
     if (hoveredElement) {
       hoveredElement.style.outline = "none";
     }
-    //document.getElementById(_id).style.display = "none";
   }
 
   function show(e) {
@@ -49,9 +50,11 @@
       hoveredElement = newHoveredElement;
       if (hoveredElement) {
         hoveredElement.style.outline = "2px solid red";
-         const siblings = getSiblings(hoveredElement);
-         const siblingCount = siblings.length;
-         spyContainer.innerHTML = showAttributes(hoveredElement) + `Elements brothers: ${siblingCount}<br/>`;
+        const siblings = getSiblings(hoveredElement);
+        const siblingCount = siblings.length;
+        spyContainer.innerHTML =
+          showAttributes(hoveredElement) +
+          `Elements brothers: ${siblingCount}<br/>`;
       }
     }
     if (spyContainer) {
@@ -170,17 +173,11 @@
       } catch (error) {
         console.error("Erreur lors de l'enregistrement du fichier :", error);
       }
-      // create a blob and trigger download
-      // const blob = new Blob([jsonContent], { type: "application/json" });
-      // const a = document.createElement("a");
-      // a.href = URL.createObjectURL(blob);
-      // a.download = filename + ".json";
-      // a.click();
     }
   }
   function getSiblings(el) {
     const parent = el.parentElement;
-    if (!parent) return []; 
+    if (!parent) return [];
     return Array.from(parent.children).filter((child) => child !== el);
   }
 
@@ -188,7 +185,7 @@
     const attributes = {
       tagName: el ? el.nodeName.toLowerCase() : "unknown",
       parents: [],
-      siblings: []
+      siblings: [],
     };
     Array.from(el.attributes).forEach((attr) => {
       attributes[attr.nodeName] = attr.nodeValue;
@@ -206,23 +203,36 @@
       });
 
       attributes.parents.push(parentAttributes);
+
       parent = parent.parentElement;
     }
-     const siblings = getSiblings(el);
-     siblings.forEach((sibling) => {
-       const siblingAttributes = {
-         tagName: sibling.nodeName.toLowerCase(),
-       };
-       Array.from(sibling.attributes).forEach((attr) => {
-         siblingAttributes[attr.nodeName] = attr.nodeValue;
-       });
-       attributes.siblings.push(siblingAttributes);
-     });
+    const siblings = getSiblings(el);
+    siblings.forEach((sibling) => {
+      const siblingAttributes = {
+        tagName: sibling.nodeName.toLowerCase(),
+      };
+      Array.from(sibling.attributes).forEach((attr) => {
+        siblingAttributes[attr.nodeName] = attr.nodeValue;
+      });
+      attributes.siblings.push(siblingAttributes);
+    });
 
     return attributes;
   }
 
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "stopSpying") {
+      document.body.removeEventListener("mousemove", glide);
+      document.body.removeEventListener("mouseover", show);
+      document.body.removeEventListener("mouseleave", hide);
+      chrome.runtime.sendMessage({ action: "stopExtension" });
+    } else if (message.action === "startSpying") {
+      document.body.addEventListener("mousemove", glide);
+      document.body.addEventListener("mouseover", show);
+      document.body.addEventListener("mouseleave", hide);
+      chrome.runtime.sendMessage({ action: "startExtension" });
+    }
+  });
+
   init();
 })();
-
-
