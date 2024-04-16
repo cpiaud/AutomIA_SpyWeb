@@ -215,6 +215,7 @@
       Array.from(sibling.attributes).forEach((attr) => {
         siblingAttributes[attr.nodeName] = attr.nodeValue;
       });
+      siblingAttributes.textContent = sibling.textContent.trim();
       attributes.siblings.push(siblingAttributes);
     });
 
