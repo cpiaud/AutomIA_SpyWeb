@@ -91,7 +91,8 @@
         ? hoveredElement.nodeName.toLowerCase() + "_" + textContent
         : hoveredElement.nodeName.toLowerCase() + "_" + "GiveMeAName";
 
-      await saveElementToJson(hoveredElement, filename);
+      await 
+      (hoveredElement, filename);
     }
   }
 
@@ -220,19 +221,19 @@
     return attributes;
   }
 
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "stopSpying") {
-      document.body.removeEventListener("mousemove", glide);
-      document.body.removeEventListener("mouseover", show);
-      document.body.removeEventListener("mouseleave", hide);
-      chrome.runtime.sendMessage({ action: "stopExtension" });
-    } else if (message.action === "startSpying") {
-      document.body.addEventListener("mousemove", glide);
-      document.body.addEventListener("mouseover", show);
-      document.body.addEventListener("mouseleave", hide);
-      chrome.runtime.sendMessage({ action: "startExtension" });
-    }
-  });
+  // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  //   if (message.action === "stopSpying") {
+  //     document.body.removeEventListener("mousemove", glide);
+  //     document.body.removeEventListener("mouseover", show);
+  //     document.body.removeEventListener("mouseleave", hide);
+  //     chrome.runtime.sendMessage({ action: "stopExtension" });
+  //   } else if (message.action === "startSpying") {
+  //     document.body.addEventListener("mousemove", glide);
+  //     document.body.addEventListener("mouseover", show);
+  //     document.body.addEventListener("mouseleave", hide);
+  //     chrome.runtime.sendMessage({ action: "startExtension" });
+  //   }
+  // });
 
   init();
 })();
