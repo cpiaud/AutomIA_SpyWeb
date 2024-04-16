@@ -203,6 +203,7 @@
         parentAttributes[attr.nodeName] = attr.nodeValue;
       });
 
+      parentAttributes.textContent = parent.textContent.trim();
       attributes.parents.push(parentAttributes);
 
       parent = parent.parentElement;
