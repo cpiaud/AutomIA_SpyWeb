@@ -179,6 +179,14 @@
     return Array.from(parent.children).filter((child) => child !== el);
   }
 
+  function truncate(str, maxlength) {
+    if (str.length > maxlength) {
+        // Truncate the string and add ellipses
+        return str.slice(0, maxlength - 1) + "…";
+    }
+    return str;
+}
+
   function collectAttributes(el) {
     const attributes = {
       tagName: el ? el.nodeName.toLowerCase() : "unknown",
@@ -204,7 +212,7 @@
         parent.nodeName.toLowerCase() !== "html" &&
         parent.nodeName.toLowerCase() !== "body"
       ) {
-        parentAttributes.textContent = parent.textContent.trim();
+        parentAttributes.textContent = truncate(parent.textContent.trim(), 10);
       }
       attributes.parents.push(parentAttributes);
 
