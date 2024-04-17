@@ -2,6 +2,7 @@
   const _id = "spyon-container",
     _posBuffer = 3;
   let hoveredElement = null;
+  const truncateCount = 2000;
 
   function init() {
     document.body.addEventListener("mousemove", glide);
@@ -213,7 +214,7 @@
       ) {
         parentAttributes.textContent = truncate(
           parent.textContent.trim(),
-          2000
+          truncateCount
         );
       }
       attributes.parents.push(parentAttributes);
