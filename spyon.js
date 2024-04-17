@@ -2,6 +2,7 @@
   const _id = "spyon-container",
     _posBuffer = 3;
   let hoveredElement = null;
+  const defaultTextContent = "GiveMeAName";
   const truncateCount = 2000;
 
   function init() {
@@ -75,7 +76,7 @@
     const textContent = hoveredElement.textContent.trim();
     const filename = textContent
       ? hoveredElement.nodeName.toLowerCase() + "_" + textContent
-      : hoveredElement.nodeName.toLowerCase() + "_" + "GiveMeAName";
+      : hoveredElement.nodeName.toLowerCase() + "_" + defaultTextContent;
 
     await saveElementToJson(hoveredElement, filename);
   }
@@ -88,7 +89,7 @@
       const textContent = hoveredElement.textContent.trim();
       const filename = textContent
         ? hoveredElement.nodeName.toLowerCase() + "_" + textContent
-        : hoveredElement.nodeName.toLowerCase() + "_" + "GiveMeAName";
+        : hoveredElement.nodeName.toLowerCase() + "_" + defaultTextContent;
 
       await (hoveredElement, filename);
     }
