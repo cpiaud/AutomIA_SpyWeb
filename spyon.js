@@ -181,10 +181,10 @@
 
   function truncate(str, maxlength) {
     if (str.length > maxlength) {
-        return str.slice(0, maxlength - 1) + "…";
+      return str.slice(0, maxlength - 1) + "…";
     }
     return str;
-}
+  }
 
   function collectAttributes(el) {
     const attributes = {
@@ -211,7 +211,10 @@
         parent.nodeName.toLowerCase() !== "html" &&
         parent.nodeName.toLowerCase() !== "body"
       ) {
-        parentAttributes.textContent = truncate(parent.textContent.trim(), 2000);
+        parentAttributes.textContent = truncate(
+          parent.textContent.trim(),
+          2000
+        );
       }
       attributes.parents.push(parentAttributes);
 
