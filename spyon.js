@@ -181,7 +181,6 @@
 
   function truncate(str, maxlength) {
     if (str.length > maxlength) {
-        // Truncate the string and add ellipses
         return str.slice(0, maxlength - 1) + "…";
     }
     return str;
@@ -212,7 +211,7 @@
         parent.nodeName.toLowerCase() !== "html" &&
         parent.nodeName.toLowerCase() !== "body"
       ) {
-        parentAttributes.textContent = truncate(parent.textContent.trim(), 10);
+        parentAttributes.textContent = truncate(parent.textContent.trim(), 2000);
       }
       attributes.parents.push(parentAttributes);
 
