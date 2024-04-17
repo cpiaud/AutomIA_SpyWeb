@@ -13,8 +13,6 @@
     });
   }
 
-
-
   function hide(e) {
     const spyContainer = document.getElementById(_id);
     if (spyContainer) {
@@ -91,8 +89,7 @@
         ? hoveredElement.nodeName.toLowerCase() + "_" + textContent
         : hoveredElement.nodeName.toLowerCase() + "_" + "GiveMeAName";
 
-      await 
-      (hoveredElement, filename);
+      await (hoveredElement, filename);
     }
   }
 
@@ -203,7 +200,12 @@
         parentAttributes[attr.nodeName] = attr.nodeValue;
       });
 
-      parentAttributes.textContent = parent.textContent.trim();
+      if (
+        parent.nodeName.toLowerCase() !== "html" &&
+        parent.nodeName.toLowerCase() !== "body"
+      ) {
+        parentAttributes.textContent = parent.textContent.trim();
+      }
       attributes.parents.push(parentAttributes);
 
       parent = parent.parentElement;
