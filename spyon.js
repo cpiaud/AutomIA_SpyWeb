@@ -163,18 +163,39 @@
       const attributes = collectAttributes(hoveredElement);
       const jsonContent = JSON.stringify(attributes, null, 2);
       try {
-        const fileHandle = await window.showSaveFilePicker({
-          suggestedName: filename + ".json",
-          types: [{ accept: { "application/json": [".json"] } }],
-        });
-        const writable = await fileHandle.createWritable();
-        await writable.write(jsonContent);
-        await writable.close();
+
+        if (window.showSaveFilePicker) { 
+          // Utiliser showSaveFilePicker si disponible (contexte https uniquement)
+          const fileHandle = await window.showSaveFilePicker({
+            suggestedName: filename + ".json",
+            types: [{ accept: { "application/json": [".json"] } }],
+          });
+          const writable = await fileHandle.createWritable();
+          await writable.write(jsonContent);
+          await writable.close();
+
+        } else { 
+          // Sinon utiliser une méthode alternative pour l'enregistrement de fichiers 
+          downloadJson(jsonContent, filename);
+        }
+        
       } catch (error) {
         console.error("Erreur lors de l'enregistrement du fichier :", error);
       }
     }
   }
+
+  function downloadJson(json, filename) { 
+    const blob = new Blob([json], { type: 'application/json' }); 
+    const url = URL.createObjectURL(blob); 
+    const link = document.createElement('a'); 
+    link.href = url; 
+    link.download = filename; 
+    link.click(); 
+    URL.revokeObjectURL(url); 
+  }
+
+
   function getSiblings(el) {
     const parent = el.parentElement;
     if (!parent) return [];
