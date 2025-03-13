@@ -2,8 +2,10 @@
   const _id = "spyon-container",
     _posBuffer = 3;
   let hoveredElement = null;
+  let originalOutline = null; // Store the original outline style
   const defaultFileName = "GiveMeAName";
   const truncateCount = 2000;
+  let lastSelectedFileHandle = null;
 
   function init() {
     document.body.addEventListener("mousemove", glide);
@@ -21,7 +23,9 @@
       spyContainer.style.display = "none";
     }
     if (hoveredElement) {
-      hoveredElement.style.outline = "none";
+        // Restore the original outline style when hiding
+      hoveredElement.style.outline = originalOutline;
+      originalOutline = null;
     }
   }
 
@@ -45,10 +49,14 @@
     const newHoveredElement = document.elementFromPoint(e.clientX, e.clientY);
     if (newHoveredElement !== hoveredElement) {
       if (hoveredElement) {
-        hoveredElement.style.outline = "none";
+        // Restore the original outline style when moving to a new element
+        hoveredElement.style.outline = originalOutline;
+        originalOutline = null;
       }
       hoveredElement = newHoveredElement;
       if (hoveredElement) {
+          // Store the original outline before changing it
+        originalOutline = hoveredElement.style.outline;
         hoveredElement.style.outline = "2px solid red";
         const siblings = getSiblings(hoveredElement);
         const siblingCount = siblings.length;
@@ -159,40 +167,47 @@
 
   async function saveElementToJson(e, filename) {
     const spyContainer = document.getElementById(_id);
-    if (spyContainer) {
+    if (spyContainer && hoveredElement) {
+      const tempOriginalOutline = hoveredElement.style.outline;
+      hoveredElement.style.outline = "";
+
       const attributes = collectAttributes(hoveredElement);
+      hoveredElement.style.outline = tempOriginalOutline;
+
       const jsonContent = JSON.stringify(attributes, null, 2);
       try {
+        const options = {
+          suggestedName: filename + ".json",
+          types: [{ accept: { "application/json": [".json"] } }],
+        };
 
-        if (window.showSaveFilePicker) { 
-          // Utiliser showSaveFilePicker si disponible (contexte https uniquement)
-          const fileHandle = await window.showSaveFilePicker({
-            suggestedName: filename + ".json",
-            types: [{ accept: { "application/json": [".json"] } }],
-          });
-          const writable = await fileHandle.createWritable();
-          await writable.write(jsonContent);
-          await writable.close();
-
-        } else { 
-          // Sinon utiliser une méthode alternative pour l'enregistrement de fichiers 
-          downloadJson(jsonContent, filename);
+        let fileHandle;
+        if (lastSelectedFileHandle) {
+          fileHandle = await window.showSaveFilePicker({ ...options, startIn: lastSelectedFileHandle });
+        } else {
+          fileHandle = await window.showSaveFilePicker(options);
         }
-        
+
+        const writable = await fileHandle.createWritable();
+        await writable.write(jsonContent);
+        await writable.close();
+
+        lastSelectedFileHandle = fileHandle;
+
       } catch (error) {
         console.error("Erreur lors de l'enregistrement du fichier :", error);
       }
     }
   }
 
-  function downloadJson(json, filename) { 
-    const blob = new Blob([json], { type: 'application/json' }); 
-    const url = URL.createObjectURL(blob); 
-    const link = document.createElement('a'); 
-    link.href = url; 
-    link.download = filename; 
-    link.click(); 
-    URL.revokeObjectURL(url); 
+  function downloadJson(json, filename) {
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
 
@@ -257,20 +272,6 @@
 
     return attributes;
   }
-
-  // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  //   if (message.action === "stopSpying") {
-  //     document.body.removeEventListener("mousemove", glide);
-  //     document.body.removeEventListener("mouseover", show);
-  //     document.body.removeEventListener("mouseleave", hide);
-  //     chrome.runtime.sendMessage({ action: "stopExtension" });
-  //   } else if (message.action === "startSpying") {
-  //     document.body.addEventListener("mousemove", glide);
-  //     document.body.addEventListener("mouseover", show);
-  //     document.body.addEventListener("mouseleave", hide);
-  //     chrome.runtime.sendMessage({ action: "startExtension" });
-  //   }
-  // });
 
   init();
 })();
