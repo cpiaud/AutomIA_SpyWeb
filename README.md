@@ -1,9 +1,14 @@
 # AutomIA SpyWeb
-Une partie du code de ce compposant est basé sur le projet SpyOn : https://github.com/edeych/spyon et est donc sous licence MIT conformément au choix de son auteur
-Le reste du code initialement implémenté par des membres de la société Open est en accord avec l'entreprise distribué sous licence GPL V3, d'où la présence des deux licences sur ce repo
+Part of the code for this compposant is based on the SpyOn project: https://github.com/edeych/spyon and is therefore licensed under the MIT licence, as chosen by its author.
+The rest of the code, initially implemented by members of the Open company, is, in agreement with the company, distributed under the GPL V3 licence, hence the presence of both licences on this repository.
 
 # Instructions
-1. Copiez et collez l'intégralité du code dans votre console web.
-2. Inclure le fichier JS dans votre base de code
+1. Open the website you want to spy on
+2. Open the development tools with the F12 key
+3. Position yourself on the console
+4. Copy and paste all the code in the spyon.js file into the console.
+5. Confirm
+ --> You can now hover over the elements you want to spy on
+ --> Right-click to save the details of an item in a JSON file
 
-Cette opération est mise en œuvre sous la forme d'un IIFE, de sorte que l'espion est activé immédiatement après l'exécution.
+ Note: This operation is implemented in the form of an IIFE (Immediately Invoked Function Expression), so that the spy is active immediately after validation in the console.

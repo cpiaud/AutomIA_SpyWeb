@@ -176,23 +176,29 @@
 
       const jsonContent = JSON.stringify(attributes, null, 2);
       try {
-        const options = {
-          suggestedName: filename + ".json",
-          types: [{ accept: { "application/json": [".json"] } }],
-        };
+        if (window.showSaveFilePicker) {
+          // Use showSaveFilePicker if available (https context only) 
+          const options = {
+            suggestedName: filename + ".json",
+            types: [{ accept: { "application/json": [".json"] } }],
+          };
 
-        let fileHandle;
-        if (lastSelectedFileHandle) {
-          fileHandle = await window.showSaveFilePicker({ ...options, startIn: lastSelectedFileHandle });
+          let fileHandle;
+          if (lastSelectedFileHandle) {
+            fileHandle = await window.showSaveFilePicker({ ...options, startIn: lastSelectedFileHandle });
+          } else {
+            fileHandle = await window.showSaveFilePicker(options);
+          }
+
+          const writable = await fileHandle.createWritable();
+          await writable.write(jsonContent);
+          await writable.close();
+
+          lastSelectedFileHandle = fileHandle;
         } else {
-          fileHandle = await window.showSaveFilePicker(options);
+          // Alternatively, use an alternative method for saving files 
+          downloadJson(jsonContent, filename + ".json");
         }
-
-        const writable = await fileHandle.createWritable();
-        await writable.write(jsonContent);
-        await writable.close();
-
-        lastSelectedFileHandle = fileHandle;
 
       } catch (error) {
         console.error("Erreur lors de l'enregistrement du fichier :", error);
